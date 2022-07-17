@@ -1,37 +1,54 @@
-<script setup lang="ts">
-defineProps<{
-  msg: string;
-}>();
+<script lang="ts">
+import { defineComponent } from "vue";
+import type { Episode } from "@/interfaces/index";
+
+export default defineComponent({
+  name: "ListItem",
+  props: {
+    episode: Array<Episode>,
+  },
+});
 </script>
 
 <template>
-  <div>
-    <div>episode image</div>
-    <div>episode name</div>
-    <div>publish date</div>
+  <div class="wrapper" v-for="ep in episode" :key="ep.id">
+    <div>
+      <div class="image">
+        <img :src="ep.image" />
+      </div>
+      <div class="content">
+        <h2>{{ ep.name }}</h2>
+        <p>{{ ep.pubDate }}</p>
+      </div>
+    </div>
   </div>
 </template>
 
-<style scoped>
-h1 {
-  font-weight: 500;
-  font-size: 2.6rem;
-  top: -10px;
-}
+<style scoped lang="scss">
+.wrapper {
+  > div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin: 40px auto;
 
-h3 {
-  font-size: 1.2rem;
-}
+    .image {
+      border: 2px solid rgb(200, 200, 200);
+      img {
+        max-width: 100px;
+        max-height: 100px;
+        object-fit: center;
+      }
+    }
 
-.greetings h1,
-.greetings h3 {
-  text-align: center;
-}
-
-@media (min-width: 1024px) {
-  .greetings h1,
-  .greetings h3 {
-    text-align: left;
+    .content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin-left: 20px;
+    }
   }
 }
 </style>
