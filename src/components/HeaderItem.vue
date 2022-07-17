@@ -1,14 +1,19 @@
-<script setup lang="ts">
-// defineProps<{
-//   msg: string;
-// }>();
+<script lang="ts">
+export default {
+  name: "HeaderItem",
+  props: {
+    headerData: {},
+  },
+};
 </script>
 
 <template>
   <div class="wrapper">
     <div class="left">
-      <div>channel image</div>
-      <div>channel or episode name</div>
+      <div class="image">
+        <img :src="headerData.image" />
+      </div>
+      <div>{{ headerData.name }}</div>
     </div>
     <button>play button</button>
   </div>
@@ -24,28 +29,15 @@
     div:first-child {
       margin-right: 20px;
     }
-  }
-}
 
-h1 {
-  font-weight: 500;
-  font-size: 2.6rem;
-  top: -10px;
-}
-
-h3 {
-  font-size: 1.2rem;
-}
-
-.greetings h1,
-.greetings h3 {
-  text-align: center;
-}
-
-@media (min-width: 1024px) {
-  .greetings h1,
-  .greetings h3 {
-    text-align: left;
+    .image {
+      border: 2px solid rgb(200, 200, 200);
+      img {
+        max-width: 200px;
+        max-height: 200px;
+        object-fit: center;
+      }
+    }
   }
 }
 </style>
