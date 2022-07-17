@@ -14,11 +14,11 @@ export default defineComponent({
     EpisodeItem,
     PlayerItem,
   },
-  emits: ["getEpisodeDetail", "toggleMode"],
+  emits: ["getEpisodeDetail", "toggleMode", "showPlayer"],
   data() {
     return {
       mode: "channel",
-      isPlaying: false,
+      isPlayerVisible: false,
       episodeDetail: {
         name: "",
         image: "",
@@ -26,6 +26,9 @@ export default defineComponent({
     };
   },
   methods: {
+    showPlayer() {
+      this.isPlayerVisible = true;
+    },
     toggleMode(mode: string) {
       this.mode = mode;
     },
@@ -56,6 +59,7 @@ export default defineComponent({
 <template>
   <main>
     <HeaderItem
+      @showPlayer="showPlayer"
       :headerData="{
         mode,
         name:
@@ -77,7 +81,7 @@ export default defineComponent({
     </div>
     <div v-if="mode === 'episode'">
       <EpisodeItem />
-      <div v-if="isPlaying">
+      <div v-if="isPlayerVisible">
         <PlayerItem />
       </div>
     </div>

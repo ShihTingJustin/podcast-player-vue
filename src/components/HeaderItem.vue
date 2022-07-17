@@ -1,22 +1,34 @@
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+import type { PropType } from "vue";
+
+export default defineComponent({
   name: "HeaderItem",
   props: {
-    headerData: {},
+    headerData: {} as PropType<{
+      name: string;
+      image: string;
+      mode: string;
+    }>,
   },
-};
+  setup(props, ctx) {
+    const handleShowPlayer = () => ctx.emit("showPlayer");
+
+    return { handleShowPlayer };
+  },
+});
 </script>
 
 <template>
   <div class="wrapper">
     <div class="left">
       <div class="image">
-        <img :src="headerData.image" />
+        <img :src="headerData?.image" />
       </div>
-      <h2>{{ headerData.name }}</h2>
+      <h2>{{ headerData?.name }}</h2>
     </div>
-    <div class="button-wrapper" v-if="headerData.mode === 'episode'">
-      <button type="button">Play</button>
+    <div class="button-wrapper" v-if="headerData?.mode === 'episode'">
+      <button type="button" @click="handleShowPlayer">Play</button>
     </div>
   </div>
 </template>
