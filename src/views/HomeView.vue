@@ -18,6 +18,7 @@ export default defineComponent({
   data() {
     return {
       mode: "channel",
+      isPlaying: false,
       episodeDetail: {
         name: "",
         image: "",
@@ -56,6 +57,7 @@ export default defineComponent({
   <main>
     <HeaderItem
       :headerData="{
+        mode,
         name:
           mode === 'channel'
             ? data.podcastData.channelName
@@ -75,7 +77,9 @@ export default defineComponent({
     </div>
     <div v-if="mode === 'episode'">
       <EpisodeItem />
-      <PlayerItem />
+      <div v-if="isPlaying">
+        <PlayerItem />
+      </div>
     </div>
   </main>
 </template>
