@@ -20,8 +20,11 @@ export default defineComponent({
       mode: "channel",
       isPlayerVisible: false,
       episodeDetail: {
+        id: "",
         name: "",
         image: "",
+        encodedDescription: "",
+        audio: "",
       },
     };
   },
@@ -80,7 +83,7 @@ export default defineComponent({
       />
     </div>
     <div v-if="mode === 'episode'">
-      <EpisodeItem />
+      <EpisodeItem :episodeDetail="episodeDetail" />
       <div v-if="isPlayerVisible">
         <PlayerItem />
       </div>
