@@ -1,47 +1,147 @@
-<script setup lang="ts">
-// defineProps<{
-//   msg: string;
-// }>();
+<script lang="ts">
+import { defineComponent, ref, reactive, onMounted } from "vue";
+import type { PropType } from "vue";
+import PlayIcon from "@/assets/play.png";
+import PauseIcon from "@/assets/pause.png";
+
+export default defineComponent({
+  name: "PlayerItem",
+  props: {
+    playerData: {} as PropType<{
+      audio: string;
+      name: string;
+      isPlayerVisible: boolean;
+    }>,
+  },
+  emits: ["play"],
+  setup(props, ctx) {
+    const audioRef = ref<HTMLAudioElement>();
+    const state = reactive({
+      isPlaying: false,
+      currentTime: 0,
+      duration: 0,
+      seekBarPosition: 0,
+    });
+
+    const play = () => {
+      audioRef?.value
+        ?.play()
+        .then(() => {
+          state.isPlaying = true;
+          state.duration = audioRef?.value?.duration;
+        })
+        .catch((err: Error) => console.log(err));
+    };
+
+    const pause = () => {
+      audioRef?.value?.pause();
+      state.isPlaying = false;
+    };
+
+    const togglePlayer = () => {
+      if (state.isPlaying) pause();
+      else play();
+    };
+
+    const handleSeekBarChange = (e) => {
+      const updateTime = e.target.value;
+      state.currentTime = updateTime;
+      state.seekBarPosition = updateTime;
+    };
+
+    const handleTimeUpdate = () => {
+      state.seekBarPosition = audioRef.value?.currentTime;
+
+      if (audioRef.value?.ended) {
+        state.isPlaying = false;
+      }
+    };
+
+    onMounted(() => {
+      if (props.playerData?.isPlayerVisible) {
+        play();
+      }
+    });
+
+    return {
+      audioRef,
+      state,
+      PlayIcon,
+      PauseIcon,
+      play,
+      togglePlayer,
+      handleSeekBarChange,
+      handleTimeUpdate,
+    };
+  },
+});
 </script>
 
 <template>
-  <div class="wrapper">
-    <audio src="" controls />
+  <div>
+    <div class="player">
+      <div class="player__progress-container">
+        <input
+          type="range"
+          class="slider"
+          min="0"
+          step="1"
+          :max="state.duration"
+          @input="handleSeekBarChange"
+          v-model="state.seekBarPosition"
+        />
+      </div>
+      <div class="player__button-container">
+        <div
+          class="player__button-container__play-button"
+          @click="togglePlayer"
+        >
+          <img :src="state.isPlaying ? PauseIcon : PlayIcon" />
+        </div>
+        <h3>{{ playerData?.name }}</h3>
+      </div>
+
+      <audio
+        ref="audioRef"
+        :src="playerData?.audio"
+        :currentTime="state.currentTime"
+        @timeupdate="handleTimeUpdate"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.wrapper {
-  width: 100%;
+.player {
   display: flex;
-  justify-content: space-between;
-  .left {
+  flex-direction: column;
+  align-items: flex-start;
+
+  &__progress-container {
     display: flex;
-    div:first-child {
-      margin-right: 20px;
-    }
+    flex-direction: column;
+    width: 100%;
   }
-}
-
-h1 {
-  font-weight: 500;
-  font-size: 2.6rem;
-  top: -10px;
-}
-
-h3 {
-  font-size: 1.2rem;
-}
-
-.greetings h1,
-.greetings h3 {
-  text-align: center;
-}
-
-@media (min-width: 1024px) {
-  .greetings h1,
-  .greetings h3 {
-    text-align: left;
+  &__button-container {
+    display: flex;
+    align-items: center;
+    margin: 10px auto auto 40px;
+    &__play-button {
+      background: #f0f0f0;
+      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border: 4px solid rgb(33, 33, 33);
+    }
+    &__play-button img {
+      width: 20px;
+      height: 20px;
+      border-radius: 100px;
+    }
+    h3 {
+      margin-left: 20px;
+    }
   }
 }
 </style>

@@ -18,7 +18,7 @@ export default defineComponent({
   data() {
     return {
       mode: "channel",
-      isPlayerVisible: false,
+      isPlayerVisible: true,
       episodeDetail: {
         id: "",
         name: "",
@@ -60,22 +60,24 @@ export default defineComponent({
 </script>
 
 <template>
-  <main>
-    <HeaderItem
-      @showPlayer="showPlayer"
-      :headerData="{
-        mode,
-        name:
-          mode === 'channel'
-            ? data.podcastData.channelName
-            : episodeDetail.name,
-        image:
-          mode === 'channel'
-            ? data.podcastData.channelImage
-            : episodeDetail.image,
-      }"
-    />
-    <div v-if="mode === 'channel'">
+  <main class="container">
+    <div class="container__wrapper">
+      <HeaderItem
+        @showPlayer="showPlayer"
+        :headerData="{
+          mode,
+          name:
+            mode === 'channel'
+              ? data.podcastData.channelName
+              : episodeDetail.name,
+          image:
+            mode === 'channel'
+              ? data.podcastData.channelImage
+              : episodeDetail.image,
+        }"
+      />
+    </div>
+    <div class="container__wrapper" v-if="mode === 'channel'">
       <ListItem
         :episode="data.podcastData.episode"
         @toggleMode="toggleMode"
@@ -83,10 +85,26 @@ export default defineComponent({
       />
     </div>
     <div v-if="mode === 'episode'">
-      <EpisodeItem :episodeDetail="episodeDetail" />
+      <div class="container__wrapper">
+        <EpisodeItem :episodeDetail="episodeDetail" />
+      </div>
       <div v-if="isPlayerVisible">
-        <PlayerItem />
+        <PlayerItem
+          :playerData="{
+            audio: episodeDetail.audio,
+            name: episodeDetail.name,
+            isPlayerVisible,
+          }"
+        />
       </div>
     </div>
   </main>
 </template>
+<style scoped lang="scss">
+.container {
+  padding-top: 2em;
+  &__wrapper {
+    padding: 0 2em;
+  }
+}
+</style>
