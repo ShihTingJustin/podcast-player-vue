@@ -41,6 +41,7 @@ interface Podcast {
   episodeMap: {
     [key: string]: EpisodeMap;
   };
+  lastEpisodeId: string;
 }
 
 export type { Rss, Channel, RawEpisode, Episode, EpisodeMap, Podcast };

@@ -8,12 +8,13 @@ export default defineComponent({
   name: "PlayerItem",
   props: {
     playerData: {} as PropType<{
+      id: string;
       audio: string;
       name: string;
       isPlayerVisible: boolean;
+      lastEpisodeId: string;
     }>,
   },
-  emits: ["play"],
   setup(props, ctx) {
     const audioRef = ref<HTMLAudioElement>();
     const state = reactive({
@@ -21,16 +22,22 @@ export default defineComponent({
       currentTime: 0,
       duration: 0,
       seekBarPosition: 0,
+      isLastEpisode: props.playerData?.id === props.playerData?.lastEpisodeId,
     });
 
     const play = () => {
-      audioRef?.value
-        ?.play()
-        .then(() => {
-          state.isPlaying = true;
-          state.duration = audioRef?.value?.duration;
-        })
-        .catch((err: Error) => console.log(err));
+      const playPromise = audioRef?.value?.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            state.isPlaying = true;
+            state.duration = audioRef?.value?.duration;
+          })
+          .catch((err) => {
+            state.isPlaying = false;
+            console.log(err);
+          });
+      }
     };
 
     const pause = () => {
@@ -49,12 +56,25 @@ export default defineComponent({
       state.seekBarPosition = updateTime;
     };
 
+    const handleNextEpisode = (episodeId: string) => {
+      if (!state.isLastEpisode)
+        ctx.emit("nextEpisode", `${Number(episodeId + 1)}`);
+    };
+
     const handleTimeUpdate = () => {
       state.seekBarPosition = audioRef.value?.currentTime;
 
       if (audioRef.value?.ended) {
+        pause();
         state.isPlaying = false;
+        state.currentTime = 0;
+
+        handleNextEpisode(props.playerData?.id);
       }
+    };
+
+    const handleCanPlay = (e: Event) => {
+      if (e && !state.isLastEpisode) play();
     };
 
     onMounted(() => {
@@ -72,6 +92,7 @@ export default defineComponent({
       togglePlayer,
       handleSeekBarChange,
       handleTimeUpdate,
+      handleCanPlay,
     };
   },
 });
@@ -85,7 +106,6 @@ export default defineComponent({
           type="range"
           class="slider"
           min="0"
-          step="1"
           :max="state.duration"
           @input="handleSeekBarChange"
           v-model="state.seekBarPosition"
@@ -98,7 +118,7 @@ export default defineComponent({
         >
           <img :src="state.isPlaying ? PauseIcon : PlayIcon" />
         </div>
-        <h3>{{ playerData?.name }}</h3>
+        <h3>Now Playing {{ playerData?.name }}</h3>
       </div>
 
       <audio
@@ -106,6 +126,7 @@ export default defineComponent({
         :src="playerData?.audio"
         :currentTime="state.currentTime"
         @timeupdate="handleTimeUpdate"
+        @canplay="handleCanPlay"
       />
     </div>
   </div>

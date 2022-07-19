@@ -13,18 +13,18 @@ const getRssData = async () => {
     const jsonData: Rss = parser.xml2js(res.data);
     const { title: channelName, image, item } = jsonData.rss.channel;
 
-    const episode: Episode[] = item.map((ep) => ({
-      id: ep.id.__text,
+    const episode: Episode[] = item.map((ep, index) => ({
+      id: String(index),
       name: ep.title,
       pubDate: ep.pubDate,
       image: ep.image._href,
     }));
 
     const episodeMap = item.reduce(
-      (acc, ep) => ({
+      (acc, ep, index) => ({
         ...acc,
-        [ep.id.__text]: {
-          id: ep.id.__text,
+        [index]: {
+          id: String(index),
           name: ep.title,
           encodedDescription: ep.encoded.__cdata,
           audio: ep.enclosure._url,
@@ -41,6 +41,7 @@ const getRssData = async () => {
       channelImage: image[0].url,
       episode,
       episodeMap,
+      lastEpisodeId: `${episode.length - 1}`,
     };
 
     return podcast;

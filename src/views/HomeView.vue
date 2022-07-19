@@ -14,11 +14,11 @@ export default defineComponent({
     EpisodeItem,
     PlayerItem,
   },
-  emits: ["getEpisodeDetail", "toggleMode", "showPlayer"],
+  emits: ["getEpisodeDetail", "toggleMode", "showPlayer", "nextEpisode"],
   data() {
     return {
       mode: "channel",
-      isPlayerVisible: true,
+      isPlayerVisible: false,
       episodeDetail: {
         id: "",
         name: "",
@@ -46,6 +46,7 @@ export default defineComponent({
         channelImage: "",
         episode: [],
         episodeMap: {},
+        lastEpisodeId: "",
       },
     });
 
@@ -90,7 +91,10 @@ export default defineComponent({
       </div>
       <div v-if="isPlayerVisible">
         <PlayerItem
+          @nextEpisode="getEpisodeDetail"
           :playerData="{
+            id: episodeDetail.id,
+            lastEpisodeId: data.podcastData.lastEpisodeId,
             audio: episodeDetail.audio,
             name: episodeDetail.name,
             isPlayerVisible,
