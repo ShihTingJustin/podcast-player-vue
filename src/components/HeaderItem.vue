@@ -4,6 +4,7 @@ import type { PropType } from "vue";
 
 export default defineComponent({
   name: "HeaderItem",
+  emits: ["showPlayer"],
   props: {
     headerData: {} as PropType<{
       name: string;
@@ -25,7 +26,7 @@ export default defineComponent({
       <div class="image">
         <img :src="headerData?.image" />
       </div>
-      <h2>{{ headerData?.name }}</h2>
+      <h2 class="title">{{ headerData?.name }}</h2>
     </div>
     <div class="button-wrapper" v-if="headerData?.mode === 'episode'">
       <button type="button" @click="handleShowPlayer">Play</button>
