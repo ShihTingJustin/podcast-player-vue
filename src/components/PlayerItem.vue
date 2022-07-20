@@ -1,11 +1,13 @@
 <script lang="ts">
 import { defineComponent, ref, reactive, onMounted } from "vue";
 import type { PropType } from "vue";
+import Slider from "primevue/slider";
 import PlayIcon from "@/assets/play.png";
 import PauseIcon from "@/assets/pause.png";
 
 export default defineComponent({
   name: "PlayerItem",
+  components: { Slider },
   props: {
     playerData: {} as PropType<{
       id: string;
@@ -50,8 +52,8 @@ export default defineComponent({
       else play();
     };
 
-    const handleSeekBarChange = (e) => {
-      const updateTime = e.target.value;
+    const handleSeekBarChange = (value: number) => {
+      const updateTime = value;
       state.currentTime = updateTime;
       state.seekBarPosition = updateTime;
     };
@@ -102,12 +104,10 @@ export default defineComponent({
   <div>
     <div class="player">
       <div class="player__progress-container">
-        <input
-          type="range"
-          class="slider"
-          min="0"
+        <Slider
+          :min="0"
           :max="state.duration"
-          @input="handleSeekBarChange"
+          @change="handleSeekBarChange"
           v-model="state.seekBarPosition"
         />
       </div>
@@ -142,6 +142,10 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     width: 100%;
+
+    .slider {
+      width: 100%;
+    }
   }
   &__button-container {
     display: flex;
