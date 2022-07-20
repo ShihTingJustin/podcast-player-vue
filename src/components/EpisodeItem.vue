@@ -14,7 +14,7 @@ export default defineComponent({
 <template>
   <div>
     <h2>Episode description</h2>
-    <div v-html="episodeDetail?.encodedDescription"></div>
+    <div class="description" v-html="episodeDetail?.encodedDescription"></div>
   </div>
 </template>
 
