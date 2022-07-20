@@ -7,6 +7,7 @@ export default defineComponent({
   props: {
     episode: Array<Episode>,
   },
+  emits: ["getEpisodeDetail", "toggleMode"],
   setup(props, ctx) {
     const handleClickEpisode = (episodeId: string) => {
       ctx.emit("getEpisodeDetail", episodeId);
