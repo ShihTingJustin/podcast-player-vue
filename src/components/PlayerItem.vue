@@ -105,6 +105,7 @@ export default defineComponent({
     <div class="player">
       <div class="player__progress-container">
         <Slider
+          class="slider"
           :min="0"
           :max="state.duration"
           @change="handleSeekBarChange"
@@ -137,7 +138,20 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-
+  ::v-deep(.slider.p-slider) {
+    background-color: #fff;
+    border: 2px solid rgb(200, 200, 200);
+    padding: 3px 0;
+    border-radius: 0;
+    .p-slider-range {
+      background-color: rgb(33, 33, 33);
+    }
+    .p-slider-handle {
+      border-radius: 50%;
+      background-color: #fff;
+      border: 2px solid rgb(200, 200, 200);
+    }
+  }
   &__progress-container {
     display: flex;
     flex-direction: column;
@@ -152,6 +166,7 @@ export default defineComponent({
     align-items: center;
     margin: 10px auto auto 40px;
     &__play-button {
+      cursor: pointer;
       background: #f0f0f0;
       border-radius: 100px;
       display: flex;
