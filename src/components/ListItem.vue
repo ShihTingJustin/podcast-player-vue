@@ -1,6 +1,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import type { Episode } from "@/interfaces/index";
+import { useEpisodeStore } from "@/stores/episode";
 
 export default defineComponent({
   name: "ListItem",
@@ -9,12 +11,16 @@ export default defineComponent({
   },
   emits: ["getEpisodeDetail", "toggleMode"],
   setup(props, ctx) {
+    const router = useRouter();
+    const store = useEpisodeStore();
+
     const handleClickEpisode = (episodeId: string) => {
       ctx.emit("getEpisodeDetail", episodeId);
       ctx.emit("toggleMode", "episode");
+      router.push(episodeId);
     };
 
-    return { handleClickEpisode };
+    return { store, handleClickEpisode };
   },
 });
 </script>
